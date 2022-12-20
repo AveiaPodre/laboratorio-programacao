@@ -36,18 +36,17 @@ while True:
     while(tentativas == 0):
         menu()
         resp = input()
-        match resp.upper():
-            case "F":
-                tentativas += 10
-                tentativas_totais = tentativas
-            case "M":
-                tentativas += 5
-                tentativas_totais = tentativas
-            case "D":
-                tentativas += 3
-                tentativas_totais = tentativas
-            case _:
-                print("Resposta inválida, dê outra resposta")
+        if(resp.upper() == "F"):
+            tentativas += 10
+            tentativas_totais = tentativas
+        elif(resp.upper() == "M"):
+            tentativas += 5
+            tentativas_totais = tentativas
+        elif(resp.upper() == "D"):
+            tentativas += 3
+            tentativas_totais = tentativas
+        else:
+            print("Resposta inválida, dê outra resposta")
 
     tempo_inicial = time.time()
 
@@ -70,6 +69,7 @@ while True:
     if(continuar.upper() == "S"):
         os.system('cls')
     elif(continuar.upper() == "N"):
+        print("Obrigado por jogar!")
         break
     else:
         print("Resposta inválida, assumimos que você não deseja continuar!")
