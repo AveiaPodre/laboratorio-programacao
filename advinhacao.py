@@ -9,7 +9,7 @@ def menu():
     print("D-Difícil")
     print("Qual a sua opção?")
     
-def vitu_careca(x, acertou, tentativas):
+def palpite(x, acertou, tentativas):
     palpite = int(input("Qual o seu palpite? "))
     if(palpite == x):
         acertou = True
@@ -52,7 +52,7 @@ while True:
     tempo_inicial = time.time()
 
     while(tentativas != 0 and acertou == False):
-        tentativas, acertou = vitu_careca(x, acertou, tentativas)
+        tentativas, acertou = palpite(x, acertou, tentativas)
         print("")
     tempo_final = time.time()
 
