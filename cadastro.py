@@ -87,12 +87,17 @@ while(True):
     elif(resp == 2):
         #pesquisar disciplina
         cod = int(input("Qual o código da disciplina a ser pesquisada: "))
-        cod_disc = pesquisa_disc(cod)
-        if(cod_disc == None):
+        disciplina = pesquisa_disc(cod)
+        if(disciplina == None):
             print("Disciplina não existente no sistema")
         else:
-            i = 0
-            for disciplina in disciplinas:
+            print("Nome:"+disciplina[0][1])
+            print("Codigo:"+ disciplina[0][0])
+            print("Semestre:"+ disciplina[0][2])
+            print("Professores:"+ disciplina[0][3])
+            print("Carga Horária:"+ disciplina[0][4])
+            print("Dias da semana:"+ disciplina[1][0])
+            print("Horário:"+ disciplina[1][1])
                 
 
     elif(resp == 3):
