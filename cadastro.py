@@ -5,9 +5,10 @@ menu = '''--- Mini Controle Acadêmico ---
 4. Cadastrar professor em disciplina
 5. Matricular aluno em disciplina
 6. Lançar notas do aluno em uma disciplina
-7. Listar alunos de uma disciplina
-8. Listar notas dos alunos de uma disciplina
-9. Sair'''
+7. Listar professores de uma disciplina
+8. Listar alunos de uma disciplina
+9. Listar notas dos alunos de uma disciplina
+10. Sair'''
 
 disciplinas = []
 
@@ -56,7 +57,8 @@ def cadastra_disc():
                     break
             
             professores = []
-            disciplina = ((cod_disc, nome_disc, semestre_disc, professores, carga_disc), (dias_disc, horario_disc))
+            alunos = []
+            disciplina = ((cod_disc, nome_disc, semestre_disc, professores, alunos, carga_disc), (dias_disc, horario_disc))
             disciplinas.append(disciplina)
             break
 def pesquisa_disc(cod):
@@ -84,8 +86,28 @@ def pesquisa_prof(cod_prof, disciplina):
         if(professor[0] == cod_prof):
             return professor
     return None
-def cadastra_aluno():
-def pesquisa_aluno():
+def matricula_aluno():
+    while(True):
+        cod_disc = int(input("Informe o código da disciplina: "))
+        disciplina = pesquisa_disc(cod_disc)
+        if(disciplina == None):
+            print("Disciplina não existente no sistema, tente novamente com um código válido")
+        else:      
+            matricula_aluno = int(input("Informe a matrícula do aluno: "))
+            if(pesquisa_aluno(matricula_aluno, disciplina)!=None):
+                print("Matrícula de aluno já cadastrada no sistema.")
+            else:
+                nome_aluno = input("Informe o nome do aluno: ")
+                curso_aluno = input("Informe o curso do aluno: ")
+                notas_aluno = []
+                aluno = (matricula_aluno, nome_aluno, curso_aluno, notas_aluno)
+                (disciplina[0][4]).append(aluno)
+                break
+def pesquisa_aluno(matricula_aluno, disciplina):
+    for aluno in disciplina[0][4]:
+        if(aluno[0] == matricula_aluno):
+            return aluno
+    return None
 def lista_prof():
 def lista_aluno():
 def insere_notas():
@@ -115,7 +137,7 @@ while(True):
                 print("Codigo:"+ disciplina[0][0])
                 print("Semestre:"+ disciplina[0][2])
                 print("Professores:"+ disciplina[0][3])
-                print("Carga Horária:"+ disciplina[0][4])
+                print("Carga Horária:"+ disciplina[0][5])
                 print("Dias da semana:"+ disciplina[1][0])
                 print("Horário:"+ disciplina[1][1])
                 break
@@ -134,15 +156,23 @@ while(True):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
             cadastra_prof()
+
     elif(resp == 5):
-        #cadastrar aluno em disciplina
+        #matricular aluno em disciplina
+        if(len(disciplina==0)):
+            print("Não há nenhuma disciplina cadastrada no sistema")
+        else:
+            matricula_aluno()
+
     elif(resp == 6):
-        #matricular ano em disciplina
-    elif(resp == 7):
         #lançar notas de aluno em disciplina
+    elif(resp == 7):
+        #listar professores de uma disciplina
     elif(resp == 8):
-        #listar notas dos alunos em disciplina
+        #listar alunos de uma disciplina
     elif(resp == 9):
+        #listar notas dos alunos de uma disciplina
+    elif(resp == 10):
         #sair do programa
         break
     else:
