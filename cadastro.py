@@ -59,24 +59,39 @@ def cadastra_disc():
             disciplina = ((cod_disc, nome_disc, semestre_disc, professores, carga_disc), (dias_disc, horario_disc))
             disciplinas.append(disciplina)
             break
-
 def pesquisa_disc(cod):
     for disciplina in disciplinas:
         if(cod == disciplina[0][0]):
             return disciplina
     return None
-
 def cadastra_prof():
-def pesquisa_prof():
+    while(True):
+        cod_disc = int(input("Informe o código da disciplina: "))
+        disciplina = pesquisa_disc(cod_disc)
+        if(disciplina == None):
+            print("Disciplina não existente no sistema, tente novamente com um código válido")
+        else:      
+            cod_prof = int(input("Informe o código do professor: "))
+            if(pesquisa_prof(cod_prof, disciplina)!=None):
+                print("Código de professor já cadastrado na disciplina.")
+            else:
+                nome_prof = input("Informe o nome do professor: ")
+                professor = (cod_prof, nome_prof)
+                (disciplina[0][3]).append(professor)
+                break
+def pesquisa_prof(cod_prof, disciplina):
+    for professor in disciplina[0][3]:
+        if(professor[0] == cod_prof):
+            return professor
+    return None
 def cadastra_aluno():
 def pesquisa_aluno():
 def lista_prof():
 def lista_aluno():
 def insere_notas():
 
-
+print(menu)
 while(True):
-    print(menu)
     resp = int(input("Informe a função a ser usada: "))
 
     if(resp == 1):
@@ -86,24 +101,39 @@ while(True):
     
     elif(resp == 2):
         #pesquisar disciplina
-        cod = int(input("Qual o código da disciplina a ser pesquisada: "))
-        disciplina = pesquisa_disc(cod)
-        if(disciplina == None):
-            print("Disciplina não existente no sistema")
-        else:
-            print("Nome:"+disciplina[0][1])
-            print("Codigo:"+ disciplina[0][0])
-            print("Semestre:"+ disciplina[0][2])
-            print("Professores:"+ disciplina[0][3])
-            print("Carga Horária:"+ disciplina[0][4])
-            print("Dias da semana:"+ disciplina[1][0])
-            print("Horário:"+ disciplina[1][1])
+        while(True):
+            if(len(disciplinas)==0):
+                print("Não há nenhuma disciplina cadastrada no sistema")
+                break
+            cod = int(input("Qual o código da disciplina a ser pesquisada: "))
+            disciplina = pesquisa_disc(cod)
+            if(disciplina == None):
+                print("Disciplina não existente no sistema, tente novamente com um código válido")
+                continue
+            else:
+                print("Nome:"+disciplina[0][1])
+                print("Codigo:"+ disciplina[0][0])
+                print("Semestre:"+ disciplina[0][2])
+                print("Professores:"+ disciplina[0][3])
+                print("Carga Horária:"+ disciplina[0][4])
+                print("Dias da semana:"+ disciplina[1][0])
+                print("Horário:"+ disciplina[1][1])
+                break
                 
-
     elif(resp == 3):
         #listar disciplinas
+        if(len(disciplinas)==0):
+            print("Não há nenhum disciplina cadastrada no sistema")
+        else:
+            for disciplina in disciplinas:
+                print("Nome:"+disciplina[0][1]+"\nCódigo:"+disciplina[0][0])
+
     elif(resp == 4):
-        #cadastrar professor em disciplina
+        #cadastrar professor em disciplina   
+        if(len(disciplina==0)):
+            print("Não há nenhuma disciplina cadastrada no sistema")
+        else:
+            cadastra_prof()
     elif(resp == 5):
         #cadastrar aluno em disciplina
     elif(resp == 6):
