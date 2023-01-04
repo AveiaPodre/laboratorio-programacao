@@ -86,7 +86,7 @@ def pesquisa_prof(cod_prof, disciplina):
         if(professor[0] == cod_prof):
             return professor
     return None
-def matricula_aluno():
+def cadastra_aluno():
     while(True):
         cod_disc = int(input("Informe o código da disciplina: "))
         disciplina = pesquisa_disc(cod_disc)
@@ -99,8 +99,8 @@ def matricula_aluno():
             else:
                 nome_aluno = input("Informe o nome do aluno: ")
                 curso_aluno = input("Informe o curso do aluno: ")
-                notas_aluno = []
-                aluno = (matricula_aluno, nome_aluno, curso_aluno, notas_aluno)
+                notas = []
+                aluno = (matricula_aluno, nome_aluno, curso_aluno, notas)
                 (disciplina[0][4]).append(aluno)
                 break
 def pesquisa_aluno(matricula_aluno, disciplina):
@@ -109,11 +109,77 @@ def pesquisa_aluno(matricula_aluno, disciplina):
             return aluno
     return None
 def lista_prof():
+    while(True):
+        cod_disc = int(input("Informe o código da disciplina: "))
+        disciplina = pesquisa_disc(cod_disc)
+        if(disciplina == None):
+            print("Disciplina não existente no sistema, tente novamente com um código válido")
+        else:
+            if(len(disciplina[0][3])==0):
+                print("Não há professores cadastrados nessa disciplina.")
+            for professor in disciplina[0][3]:
+                print("Nome:"+professor[1]+"  Código:"+str(professor[0]))
+            break
 def lista_aluno():
+    while(True):
+        cod_disc = int(input("Informe o código da disciplina: "))
+        disciplina = pesquisa_disc(cod_disc)
+        if(disciplina == None):
+            print("Disciplina não existente no sistema, tente novamente com um código válido")
+        else:
+            if(len(disciplina[0][4])==0):
+                print("Não há alunos matriculados nessa disciplina.")
+            for aluno in disciplina[0][4]:
+                print("Nome:"+aluno[1]+"  Matrícula:"+str(aluno[0])+"  Curso:"+aluno[2])
+            break
 def insere_notas():
-
+    while(True):
+        cod_disc = int(input("Informe o código da disciplina: "))
+        disciplina = pesquisa_disc(cod_disc)
+        if(disciplina == None):
+            print("Disciplina não existente no sistema, tente novamente com um código válido")
+        elif(len(disciplina[0][4])==0):
+            print("Não há alunos matriculados nessa disciplina.")
+            break
+        else:
+            matricula_aluno = int(input("Informe a matrícula do aluno: "))
+            aluno = pesquisa_aluno(matricula_aluno, disciplina)
+            if(aluno == None):
+                print("Aluno não matriculado nessa disciplina.")
+                break
+            else:
+                for i in range(0,3):
+                    while(True):
+                        nota = float(input("Informe a "+str((i+1))+"° nota: "))
+                        if(nota<0 or nota>10):
+                            print("Nota inválida, insira um valor coerente")
+                        else:
+                            aluno[3].append(nota)
+                            break
+                break
+def lista_notas():
+    while(True):
+        cod_disc = int(input("Informe o código da disciplina: "))
+        disciplina = pesquisa_disc(cod_disc)
+        if(disciplina == None):
+            print("Disciplina não existente no sistema, tente novamente com um código válido")
+        else:
+            for aluno in disciplina[0][4]:
+                soma_notas = 0
+                for nota in aluno[3]:
+                    soma_notas += nota
+                media_aluno = soma_notas/len(aluno[3])
+                print("Aluno:"+aluno[1])
+                i = 1
+                for nota in aluno[3]:
+                    print("Nota"+str(i)+":"+str(nota))
+                    i +=1
+                print("Média:"+str(media_aluno))
+            break
+                
 print(menu)
 while(True):
+    print("")
     resp = int(input("Informe a função a ser usada: "))
 
     if(resp == 1):
@@ -133,13 +199,13 @@ while(True):
                 print("Disciplina não existente no sistema, tente novamente com um código válido")
                 continue
             else:
-                print("Nome:"+disciplina[0][1])
-                print("Codigo:"+ disciplina[0][0])
-                print("Semestre:"+ disciplina[0][2])
-                print("Professores:"+ disciplina[0][3])
-                print("Carga Horária:"+ disciplina[0][5])
-                print("Dias da semana:"+ disciplina[1][0])
-                print("Horário:"+ disciplina[1][1])
+                print("Nome:"+str(disciplina[0][1]))
+                print("Codigo:"+ str(disciplina[0][0]))
+                print("Semestre:"+ str(disciplina[0][2]))
+                print("Professores:"+ str(disciplina[0][3]))
+                print("Carga Horária:"+ str(disciplina[0][5]))
+                print("Dias da semana:"+ str(disciplina[1][0]))
+                print("Horário:"+ str(disciplina[1][1]))
                 break
                 
     elif(resp == 3):
@@ -148,32 +214,53 @@ while(True):
             print("Não há nenhum disciplina cadastrada no sistema")
         else:
             for disciplina in disciplinas:
-                print("Nome:"+disciplina[0][1]+"\nCódigo:"+disciplina[0][0])
+                print("Nome:"+disciplina[0][1]+"\nCódigo:"+str(disciplina[0][0]))
 
     elif(resp == 4):
         #cadastrar professor em disciplina   
-        if(len(disciplina==0)):
+        if(len(disciplinas)==0):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
             cadastra_prof()
 
     elif(resp == 5):
         #matricular aluno em disciplina
-        if(len(disciplina==0)):
+        if(len(disciplinas)==0):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
-            matricula_aluno()
+            cadastra_aluno()
 
     elif(resp == 6):
         #lançar notas de aluno em disciplina
+        if(len(disciplinas)==0):
+            print("Não há nenhuma disciplina cadastrada no sistema")
+        else:
+            insere_notas()
+    
     elif(resp == 7):
         #listar professores de uma disciplina
+        if(len(disciplinas)==0):
+            print("Não há nenhuma disciplina cadastrada no sistema")
+        else:
+            lista_prof()
+
     elif(resp == 8):
         #listar alunos de uma disciplina
+        if(len(disciplinas)==0):
+            print("Não há nenhuma disciplina cadastrada no sistema")
+        else:
+            lista_aluno()
+
     elif(resp == 9):
         #listar notas dos alunos de uma disciplina
+        if(len(disciplinas)==0):
+            print("Não há nenhuma disciplina cadastrada no sistema")
+        else:
+            lista_notas()
+
     elif(resp == 10):
         #sair do programa
         break
+    
     else:
         print("Opção inválida, tente novamente!")
