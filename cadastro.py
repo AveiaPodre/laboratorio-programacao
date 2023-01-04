@@ -163,6 +163,9 @@ def lista_notas():
         disciplina = pesquisa_disc(cod_disc)
         if(disciplina == None):
             print("Disciplina não existente no sistema, tente novamente com um código válido")
+        elif(len(disciplina[0][4])==0):
+            print("Não há alunos matriculados nessa disciplina.")
+            break
         else:
             for aluno in disciplina[0][4]:
                 soma_notas = 0
