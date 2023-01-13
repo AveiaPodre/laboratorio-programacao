@@ -1,4 +1,5 @@
 import csv
+import os
 
 menu = '''--- Mini Controle Acadêmico ---
 1. Cadastrar disciplina
@@ -15,6 +16,11 @@ menu = '''--- Mini Controle Acadêmico ---
 disciplinas = []
 
 def arquivo_para_lista():
+    if os.path.isfile('disciplinas.csv'):
+        arquivo_disc = open('disciplinas.csv', 'r', newline='', encoding='utf-8')
+    else:
+        arquivo_disc = open('disciplinas.csv', 'w', newline='', encoding='utf-8')
+        return
     with open('disciplinas.csv', mode='r') as arquivo_disc:
         csv_reader = csv.reader(arquivo_disc, delimiter = ',')
 
@@ -43,10 +49,11 @@ def arquivo_para_lista():
                     nome_aluno = info[1]
                     curso_aluno = info[2]
                     notas_aluno = []
-                    notas = (str(info[3]).split('#'))
-                    for nota in notas:
-                        nota_float = float(nota)
-                        notas_aluno.append(nota_float)
+                    if(info[3] != " "):
+                        notas = (str(info[3]).split('#'))
+                        for nota in notas:
+                            nota_float = float(nota)
+                            notas_aluno.append(nota_float)
                     alu = (matricula_aluno, nome_aluno, curso_aluno, notas_aluno)
                     alunos_disc.append(alu)
                 
@@ -259,6 +266,9 @@ def lista_notas():
             break
         else:
             for aluno in disciplina[0][4]:
+                if(len(aluno[3]) == 0):
+                    print("Aluno " + aluno[1] + " não possui nenhuma nota cadastrada")
+                    continue
                 soma_notas = 0
                 for nota in aluno[3]:
                     soma_notas += nota
@@ -268,7 +278,7 @@ def lista_notas():
                 for nota in aluno[3]:
                     print("Nota"+str(i)+":"+str(nota))
                     i +=1
-                print("Média:"+str(media_aluno))
+                print("Média:"+str(media_aluno)+"\n")
             break
 
 arquivo_para_lista()
