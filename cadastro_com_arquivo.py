@@ -11,7 +11,9 @@ menu = '''--- Mini Controle Acadêmico ---
 7. Listar professores de uma disciplina
 8. Listar alunos de uma disciplina
 9. Listar notas dos alunos de uma disciplina
-10. Sair e salvar arquivo'''
+10. Salvar arquivo
+11. Salvar e sair
+12. Sair sem salvar'''
 
 disciplinas = []
 
@@ -364,9 +366,15 @@ while(True):
             lista_notas()
 
     elif(resp == 10):
-        #sair do programa
+        #salvar o programa
+        lista_para_arquivos()
+
+    elif(resp == 11):
+        #salvar e sair do programa
         lista_para_arquivos()
         break
-    
+    elif(resp == 12):
+        #sair sem salvar
+        break
     else:
         print("Opção inválida, tente novamente!")
