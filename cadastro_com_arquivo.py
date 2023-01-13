@@ -1,3 +1,6 @@
+import csv
+import os.path
+
 menu = '''--- Mini Controle Acadêmico ---
 1. Cadastrar disciplina
 2. Pesquisar disciplina
@@ -10,16 +13,57 @@ menu = '''--- Mini Controle Acadêmico ---
 9. Listar notas dos alunos de uma disciplina
 10. Sair'''
 
-
-arquivo_disc = open("disciplinas.txt", "w")
-arquivo_prof = open("professores.txt", "w")
-arquivo_alun = open("alunos.txt", "w")
-arquivo_notas = open("notas_alunos.txt", "w")
 disciplinas = []
 
-def ler_arquivos():
-    
+def arquivo_para_lista(disciplinas):
+    with open('disciplinas.csv', mode='r') as arquivo_disc:
+        csv_reader = csv.reader(arquivo_disc, delimiter = ',')
+        line_count = 0
 
+        for linha in csv_reader:
+            if(line_count != 0):
+                cod_disc = {linha[0]}
+                nome_disc = {linha[1]}
+                semestre_disc = {linha[2]}
+                professores_disc = []
+                if({linha[3]} != " "):
+                    professores = {linha[3].split(';')}
+                    for prof in professores:
+                        info = {str(prof).split('-')}
+                        cod_prof = info[0]
+                        nome_prof = info[1]
+                        professor = (cod_prof, nome_prof)
+                        professores_disc.append(professor)
+                
+                alunos_disc = []
+                if({linha[4]} != " "):
+                    alunos = {linha[4].split(';')}
+                    for aluno in alunos:
+                        info = {str(aluno).split('-')}
+                        matricula_aluno = info[0]
+                        nome_aluno = info[1]
+                        curso_aluno = info[2]
+                        notas_aluno = []
+                        notas = {str(info[3]).split('#')}
+                        for nota in notas:
+                            notas_aluno.append(nota)
+                        alu = (matricula_aluno, nome_aluno, curso_aluno, notas_aluno)
+                        alunos_disc.append(alu)
+                
+                carga_disc = {linha[5]}
+                dias_disc = []
+                dias = str(linha[6]).split(';')
+                for dia in dias:
+                    dias_disc.append(dia)
+                horario_disc = {linha[7]}
+                disciplina = ((cod_disc, nome_disc, semestre_disc, professores_disc, alunos_disc, carga_disc),(dias_disc, horario_disc))
+                disciplinas.append(disciplina)
+            line_count += 1
+    arquivo_disc.close()
+
+
+
+def lista_para_arquivos():
 def cadastra_disc():
     while(True):
         cod_disc = int(input("Informe o código da disciplina a cadastrar: "))
@@ -271,10 +315,6 @@ while(True):
 
     elif(resp == 10):
         #sair do programa
-        arquivo_disc.close()
-        arquivo_prof.close()
-        arquivo_alun.close()
-        arquivo_notas.close()
         break
     
     else:
