@@ -41,15 +41,15 @@ def arquivo_para_lista():
                     info =(str(prof).split('-'))
                     cod_prof = int(info[0])
                     nome_prof = info[1]
-                    professor = (cod_prof, nome_prof)
+                    prof = professor(cod_prof, nome_prof)
                     professores_disc.append(professor)
                 
             alunos_disc = []
             if(linha[4] != " "):
                 alunos = []
                 alunos = (linha[4].split(';'))
-                for aluno in alunos:
-                    info = (str(aluno).split('-'))
+                for alu in alunos:
+                    info = (str(alu).split('-'))
                     matricula_aluno = int(info[0])
                     nome_aluno = info[1]
                     curso_aluno = info[2]
@@ -59,7 +59,7 @@ def arquivo_para_lista():
                         for nota in notas:
                             nota_float = float(nota)
                             notas_aluno.append(nota_float)
-                    alu = (matricula_aluno, nome_aluno, curso_aluno, notas_aluno)
+                    alu = aluno(matricula_aluno, nome_aluno, curso_aluno, notas_aluno)
                     alunos_disc.append(alu)
                 
             carga_disc = int(linha[5])
@@ -75,27 +75,27 @@ def lista_para_arquivos():
     arquivo_disc = open('disciplinas.csv', 'w', newline='', encoding='utf-8')
     for disc in disciplinas:
         # disciplina = ((cod_disc, nome_disc, semestre_disc, professores, alunos, carga_disc), (dias_disc, horarios_disc))
-        cod_disc = disc[0][0]
-        nome_disc = disc[0][1]
-        semestre_disc = disc[0][2]
+        cod_disc = disc.get_codigo()
+        nome_disc = disc.get_nome()
+        semestre_disc = disc.get_semestre()
         professores = ""
-        if len(disc[0][3]) > 0:
-            for professor in disc[0][3]:
-                cod_prof = professor[0]
-                nome_prof = professor[1]
+        if len(disc.get_professores()) > 0:
+            for prof in disc.get_professores():
+                cod_prof = prof.get_codigo()
+                nome_prof = prof.get_nome()
                 professores += str(cod_prof)+"-"+nome_prof+";"
             professores = professores[0:-1]
         else:
             professores = " "
         alunos = ""
-        if len(disc[0][4]) > 0:
-            for aluno in disc[0][4]:
-                matricula_aluno = aluno[0]
-                nome_aluno = aluno[1]
-                curso_aluno = aluno[2]
+        if len(disc.get_alunos()) > 0:
+            for alu in disc.get_alunos():
+                matricula_aluno = alu.get_matricula()
+                nome_aluno = alu.get_nome()
+                curso_aluno = alu.get_curso()
                 notas_aluno = ""
-                if len(aluno[3]) > 0:
-                    list_notas = aluno[3]
+                if len(alu.get_notas) > 0:
+                    list_notas = alu.get_notas
                     n1 = list_notas[0]
                     n2 = list_notas[1]
                     n3 = list_notas[2]
@@ -106,11 +106,11 @@ def lista_para_arquivos():
             alunos = alunos[0:-1]
         else:
             alunos = " "
-        carga_disc = disc[0][5]
-        if len(disc[1][0]) == 2:
-            dias_disc = str((disc[1][0])[0])+";"+str((disc[1][0])[1])
+        carga_disc = disc.get_carga()
+        if len(disc.get_dias()) == 2:
+            dias_disc = str((disc.get_dias())[0])+";"+str((disc.get_dias())[1])
         else:
-            dias_disc = str((disc[1][0])[0])+";"+str((disc[1][0])[1])+";"+str((disc[1][0])[2])
+            dias_disc = str((disc.get_dias())[0])+";"+str((disc.get_dias())[1])+";"+str((disc.get_dias())[2])
         horarios_disc = disc[1][1]
         nova_disc = str(cod_disc)+","+str(nome_disc)+","+str(semestre_disc)+","+professores+","+alunos+","+str(carga_disc)+","+dias_disc+","+str(horarios_disc)
         arquivo_disc.write(nova_disc+"\n")
@@ -161,55 +161,13 @@ def cadastra_disc():
             
             professores = []
             alunos = []
-            disciplina = ((cod_disc, nome_disc, semestre_disc, professores, alunos, carga_disc), (dias_disc, horario_disc))
-            disciplinas.append(disciplina)
+            disc = disciplina(cod_disc, nome_disc, semestre_disc, professores, alunos, carga_disc, dias_disc, horario_disc)
+            disciplinas.append(disc)
             break
 def pesquisa_disc(cod):
-    for disciplina in disciplinas:
-        if(cod == disciplina[0][0]):
-            return disciplina
-    return None
-def cadastra_prof():
-    while(True):
-        cod_disc = int(input("Informe o código da disciplina: "))
-        disciplina = pesquisa_disc(cod_disc)
-        if(disciplina == None):
-            print("Disciplina não existente no sistema, tente novamente com um código válido")
-        else:      
-            cod_prof = int(input("Informe o código do professor: "))
-            if(pesquisa_prof(cod_prof, disciplina)!=None):
-                print("Código de professor já cadastrado na disciplina.")
-            else:
-                nome_prof = input("Informe o nome do professor: ")
-                professor = (cod_prof, nome_prof)
-                (disciplina[0][3]).append(professor)
-                break
-def pesquisa_prof(cod_prof, disciplina):
-    for professor in disciplina[0][3]:
-        if(professor[0] == cod_prof):
-            return professor
-    return None
-def cadastra_aluno():
-    while(True):
-        cod_disc = int(input("Informe o código da disciplina: "))
-        disciplina = pesquisa_disc(cod_disc)
-        if(disciplina == None):
-            print("Disciplina não existente no sistema, tente novamente com um código válido")
-        else:      
-            matricula_aluno = int(input("Informe a matrícula do aluno: "))
-            if(pesquisa_aluno(matricula_aluno, disciplina)!=None):
-                print("Matrícula de aluno já cadastrada no sistema.")
-            else:
-                nome_aluno = input("Informe o nome do aluno: ")
-                curso_aluno = input("Informe o curso do aluno: ")
-                notas = []
-                aluno = (matricula_aluno, nome_aluno, curso_aluno, notas)
-                (disciplina[0][4]).append(aluno)
-                break
-def pesquisa_aluno(matricula_aluno, disciplina):
-    for aluno in disciplina[0][4]:
-        if(aluno[0] == matricula_aluno):
-            return aluno
+    for disc in disciplinas:
+        if(cod == disc.get_codigo()):
+            return disc
     return None
 def lista_prof():
     while(True):
@@ -304,18 +262,18 @@ while(True):
                 print("Não há nenhuma disciplina cadastrada no sistema")
                 break
             cod = int(input("Qual o código da disciplina a ser pesquisada: "))
-            disciplina = pesquisa_disc(cod)
-            if(disciplina == None):
+            disc = pesquisa_disc(cod)
+            if(disc == None):
                 print("Disciplina não existente no sistema, tente novamente com um código válido")
                 continue
             else:
-                print("Nome:"+str(disciplina[0][1]))
-                print("Codigo:"+ str(disciplina[0][0]))
-                print("Semestre:"+ str(disciplina[0][2]))
-                print("Professores:"+ str(disciplina[0][3]))
-                print("Carga Horária:"+ str(disciplina[0][5]))
-                print("Dias da semana:"+ str(disciplina[1][0]))
-                print("Horário:"+ str(disciplina[1][1]))
+                print("Nome:"+str(disc.get_nome()))
+                print("Codigo:"+ str(disc.get_codigo()))
+                print("Semestre:"+ str(disc.get_semestre()))
+                print("Professores:"+ str(disc.get_professores()))
+                print("Carga Horária:"+ str(disc.get_carga()))
+                print("Dias da semana:"+ str(disc.get_dias()))
+                print("Horário:"+ str(disc.get_horario()))
                 break
                 
     elif(resp == 3):
@@ -323,22 +281,36 @@ while(True):
         if(len(disciplinas)==0):
             print("Não há nenhum disciplina cadastrada no sistema")
         else:
-            for disciplina in disciplinas:
-                print("Nome:"+str(disciplina[0][1])+"\nCódigo:"+str(disciplina[0][0])+"\n")
+            for disc in disciplinas:
+                print("Nome:"+str(disc.get_nome())+"\nCódigo:"+str(disc.get_codigo())+"\n")
 
     elif(resp == 4):
         #cadastrar professor em disciplina   
         if(len(disciplinas)==0):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
-            cadastra_prof()
+            while(True):
+                cod_disc = int(input("Informe o código da disciplina: "))
+                disc = pesquisa_disc(cod_disc)
+                if(disc == None):
+                    print("Disciplina não existente no sistema, tente novamente com um código válido")
+                else:
+                    disc.cadastra_prof()
+                    break
 
     elif(resp == 5):
         #matricular aluno em disciplina
         if(len(disciplinas)==0):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
-            cadastra_aluno()
+            while(True):
+                cod_disc = int(input("Informe o código da disciplina: "))
+                disc = pesquisa_disc(cod_disc)
+                if(disc == None):
+                    print("Disciplina não existente no sistema, tente novamente com um código válido")
+                else:
+                    disc.matricula_aluno()
+                    break
 
     elif(resp == 6):
         #lançar notas de aluno em disciplina
