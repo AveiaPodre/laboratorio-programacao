@@ -1,7 +1,7 @@
-import aluno
-import professor
+from aluno import Aluno
+from professor import Professor
 
-class disciplina:
+class Disciplina:
     codigo = 0
     nome = ''
     semestre = ''
@@ -48,16 +48,16 @@ class disciplina:
     def pesquisa_prof(self, cod_prof):
         for prof in self.professores:
             if(prof.get_codigo() == cod_prof):
-                return professor
+                return prof
         return None
 
     def cadastra_prof(self):
         cod_prof = int(input("Informe o código do professor: "))
-        if(pesquisa_prof(cod_prof) != None):
+        if(self.pesquisa_prof(cod_prof) != None):
             print("Código de professor já cadastrado na disciplina.")
         else:
             nome_prof = input("Informe o nome do professor: ")
-            prof = professor(cod_prof, nome_prof)
+            prof = Professor(cod_prof, nome_prof)
             (self.professores).append(prof)
 
     def pesquisa_aluno(self, matricula_aluno):
@@ -68,13 +68,47 @@ class disciplina:
 
     def cadastra_aluno(self):
         matricula_aluno = int(input("Informe a matrícula do aluno: "))
-        if(pesquisa_aluno(matricula_aluno)!=None):
+        if(self.pesquisa_aluno(matricula_aluno)!=None):
             print("Matrícula de aluno já cadastrada no sistema.")
         else:
             nome_aluno = input("Informe o nome do aluno: ")
             curso_aluno = input("Informe o curso do aluno: ")
             notas = []
-            alu = aluno(matricula_aluno, nome_aluno, curso_aluno, notas)
+            alu = Aluno(matricula_aluno, nome_aluno, curso_aluno, notas)
             (self.alunos).append(alu)
 
+    def insere_notas(self):
+        while(True):
+            if(len(self.get_alunos()) == 0):
+                print("Não há alunos matriculados nessa disciplina.")
+                break
+            else:
+                matricula_aluno = int(input("Informe a matrícula do aluno: "))
+                alu = self.pesquisa_aluno(matricula_aluno)
+                if(alu == None):
+                    print("Aluno não matriculado nessa disciplina.")
+                    break
+                else:
+                    alu.insere_notas()
+                    break
 
+    def lista_prof(self):
+        if(len(self.get_professores()) == 0):
+            print("Não há professores cadastrados nessa disciplina.")
+        else:
+            for professor in self.professores:
+                print("Nome:"+ professor.get_nome() +"  Código:" + str(professor.get_codigo()))
+
+    def lista_aluno(self):
+        if(len(self.get_alunos()) == 0):
+            print("Não há alunos matriculados nessa disciplina.")
+        else:
+            for alu in self.alunos:
+                print("Nome:"+ alu.get_nome() +"  Matrícula:" + str(alu.get_matricula()) + " Curso:" + alu.get_curso())
+
+    def lista_notas(self):
+        if(len(self.get_alunos()) == 0):
+            print("Não há alunos matriculados nessa disciplina.")
+        else:
+            for alu in self.alunos:
+                alu.lista_notas()

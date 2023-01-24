@@ -1,6 +1,6 @@
-import disciplina
-import aluno
-import professor
+from disciplina import Disciplina
+from aluno import Aluno
+from professor import Professor
 import csv
 import os
 
@@ -41,8 +41,8 @@ def arquivo_para_lista():
                     info =(str(prof).split('-'))
                     cod_prof = int(info[0])
                     nome_prof = info[1]
-                    prof = professor(cod_prof, nome_prof)
-                    professores_disc.append(professor)
+                    prof = Professor(cod_prof, nome_prof)
+                    professores_disc.append(prof)
                 
             alunos_disc = []
             if(linha[4] != " "):
@@ -59,7 +59,7 @@ def arquivo_para_lista():
                         for nota in notas:
                             nota_float = float(nota)
                             notas_aluno.append(nota_float)
-                    alu = aluno(matricula_aluno, nome_aluno, curso_aluno, notas_aluno)
+                    alu = Aluno(matricula_aluno, nome_aluno, curso_aluno, notas_aluno)
                     alunos_disc.append(alu)
                 
             carga_disc = int(linha[5])
@@ -68,13 +68,13 @@ def arquivo_para_lista():
             for dia in dias:
                 dias_disc.append(dia)
             horario_disc = linha[7]
-            disc = disciplina(cod_disc, nome_disc, semestre_disc, professores_disc, alunos_disc, carga_disc, dias_disc, horario_disc)
+            disc = Disciplina(cod_disc, nome_disc, semestre_disc, professores_disc, alunos_disc, carga_disc, dias_disc, horario_disc)
             disciplinas.append(disc)       
     arquivo_disc.close()
 def lista_para_arquivos():
     arquivo_disc = open('disciplinas.csv', 'w', newline='', encoding='utf-8')
     for disc in disciplinas:
-        # disciplina = ((cod_disc, nome_disc, semestre_disc, professores, alunos, carga_disc), (dias_disc, horarios_disc))
+        # disciplina = (cod_disc, nome_disc, semestre_disc, professores, alunos, carga_disc, dias_disc, horarios_disc)
         cod_disc = disc.get_codigo()
         nome_disc = disc.get_nome()
         semestre_disc = disc.get_semestre()
@@ -94,8 +94,8 @@ def lista_para_arquivos():
                 nome_aluno = alu.get_nome()
                 curso_aluno = alu.get_curso()
                 notas_aluno = ""
-                if len(alu.get_notas) > 0:
-                    list_notas = alu.get_notas
+                if len(alu.get_notas()) > 0:
+                    list_notas = alu.get_notas()
                     n1 = list_notas[0]
                     n2 = list_notas[1]
                     n3 = list_notas[2]
@@ -107,11 +107,12 @@ def lista_para_arquivos():
         else:
             alunos = " "
         carga_disc = disc.get_carga()
+        dias = disc.get_dias()
         if len(disc.get_dias()) == 2:
-            dias_disc = str((disc.get_dias())[0])+";"+str((disc.get_dias())[1])
+            dias_disc = str(dias[0])+";"+str(dias[1])
         else:
-            dias_disc = str((disc.get_dias())[0])+";"+str((disc.get_dias())[1])+";"+str((disc.get_dias())[2])
-        horarios_disc = disc[1][1]
+            dias_disc = str(dias[0])+";"+str(dias[1])+";"+str(dias[2])
+        horarios_disc = disc.get_horario()
         nova_disc = str(cod_disc)+","+str(nome_disc)+","+str(semestre_disc)+","+professores+","+alunos+","+str(carga_disc)+","+dias_disc+","+str(horarios_disc)
         arquivo_disc.write(nova_disc+"\n")
     arquivo_disc.close()
@@ -161,7 +162,7 @@ def cadastra_disc():
             
             professores = []
             alunos = []
-            disc = disciplina(cod_disc, nome_disc, semestre_disc, professores, alunos, carga_disc, dias_disc, horario_disc)
+            disc = Disciplina(cod_disc, nome_disc, semestre_disc, professores, alunos, carga_disc, dias_disc, horario_disc)
             disciplinas.append(disc)
             break
 def pesquisa_disc(cod):
@@ -169,80 +170,6 @@ def pesquisa_disc(cod):
         if(cod == disc.get_codigo()):
             return disc
     return None
-def lista_prof():
-    while(True):
-        cod_disc = int(input("Informe o código da disciplina: "))
-        disciplina = pesquisa_disc(cod_disc)
-        if(disciplina == None):
-            print("Disciplina não existente no sistema, tente novamente com um código válido")
-        else:
-            if(len(disciplina[0][3])==0):
-                print("Não há professores cadastrados nessa disciplina.")
-            for professor in disciplina[0][3]:
-                print("Nome:"+professor[1]+"  Código:"+str(professor[0]))
-            break
-def lista_aluno():
-    while(True):
-        cod_disc = int(input("Informe o código da disciplina: "))
-        disciplina = pesquisa_disc(cod_disc)
-        if(disciplina == None):
-            print("Disciplina não existente no sistema, tente novamente com um código válido")
-        else:
-            if(len(disciplina[0][4])==0):
-                print("Não há alunos matriculados nessa disciplina.")
-            for aluno in disciplina[0][4]:
-                print("Nome:"+aluno[1]+"  Matrícula:"+str(aluno[0])+"  Curso:"+aluno[2])
-            break
-def insere_notas():
-    while(True):
-        cod_disc = int(input("Informe o código da disciplina: "))
-        disciplina = pesquisa_disc(cod_disc)
-        if(disciplina == None):
-            print("Disciplina não existente no sistema, tente novamente com um código válido")
-        elif(len(disciplina[0][4])==0):
-            print("Não há alunos matriculados nessa disciplina.")
-            break
-        else:
-            matricula_aluno = int(input("Informe a matrícula do aluno: "))
-            aluno = pesquisa_aluno(matricula_aluno, disciplina)
-            if(aluno == None):
-                print("Aluno não matriculado nessa disciplina.")
-                break
-            else:
-                for i in range(0,3):
-                    while(True):
-                        nota = float(input("Informe a "+str((i+1))+"° nota: "))
-                        if(nota<0 or nota>10):
-                            print("Nota inválida, insira um valor coerente")
-                        else:
-                            aluno[3].append(nota)
-                            break
-                break
-def lista_notas():
-    while(True):
-        cod_disc = int(input("Informe o código da disciplina: "))
-        disciplina = pesquisa_disc(cod_disc)
-        if(disciplina == None):
-            print("Disciplina não existente no sistema, tente novamente com um código válido")
-        elif(len(disciplina[0][4])==0):
-            print("Não há alunos matriculados nessa disciplina.")
-            break
-        else:
-            for aluno in disciplina[0][4]:
-                if(len(aluno[3]) == 0):
-                    print("Aluno " + aluno[1] + " não possui nenhuma nota cadastrada")
-                    continue
-                soma_notas = 0
-                for nota in aluno[3]:
-                    soma_notas += nota
-                media_aluno = soma_notas/len(aluno[3])
-                print("Aluno:"+aluno[1])
-                i = 1
-                for nota in aluno[3]:
-                    print("Nota"+str(i)+":"+str(nota))
-                    i +=1
-                print("Média:"+str(media_aluno)+"\n")
-            break
 
 arquivo_para_lista()
 print(menu)
@@ -309,7 +236,7 @@ while(True):
                 if(disc == None):
                     print("Disciplina não existente no sistema, tente novamente com um código válido")
                 else:
-                    disc.matricula_aluno()
+                    disc.cadastra_aluno()
                     break
 
     elif(resp == 6):
@@ -317,28 +244,56 @@ while(True):
         if(len(disciplinas)==0):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
-            insere_notas()
+            while(True):
+                cod_disc = int(input("Informe o código da disciplina: "))
+                disc = pesquisa_disc(cod_disc)
+                if(disc == None):
+                    print("Disciplina não existente no sistema, tente novamente com um código válido")
+                else:
+                    disc.insere_notas()
+                    break
     
     elif(resp == 7):
         #listar professores de uma disciplina
         if(len(disciplinas)==0):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
-            lista_prof()
+            while(True):
+                cod_disc = int(input("Informe o código da disciplina: "))
+                disc = pesquisa_disc(cod_disc)
+                if(disc == None):
+                    print("Disciplina não existente no sistema, tente novamente com um código válido")
+                else:
+                    disc.lista_prof()
+                    break
 
     elif(resp == 8):
         #listar alunos de uma disciplina
         if(len(disciplinas)==0):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
-            lista_aluno()
+            while(True):
+                cod_disc = int(input("Informe o código da disciplina: "))
+                disc = pesquisa_disc(cod_disc)
+                if(disc == None):
+                    print("Disciplina não existente no sistema, tente novamente com um código válido")
+                else:
+                    disc.lista_aluno()
+                    break
 
     elif(resp == 9):
         #listar notas dos alunos de uma disciplina
         if(len(disciplinas)==0):
             print("Não há nenhuma disciplina cadastrada no sistema")
         else:
-            lista_notas()
+            while(True):
+                cod_disc = int(input("Informe o código da disciplina: "))
+                disc = pesquisa_disc(cod_disc)
+                if(disc == None):
+                    print("Disciplina não existente no sistema, tente novamente com um código válido")
+                else:
+                    disc.lista_notas()
+                    break
 
     elif(resp == 10):
         #salvar o programa
@@ -348,8 +303,10 @@ while(True):
         #salvar e sair do programa
         lista_para_arquivos()
         break
+
     elif(resp == 12):
         #sair sem salvar
         break
+
     else:
         print("Opção inválida, tente novamente!")

@@ -1,4 +1,4 @@
-class professor:
+class Professor:
     codigo = 0
     nome = ''
 
